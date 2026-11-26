@@ -9,6 +9,7 @@ jobs:
   send-start-deploy-telegram-message:
     name: Send Telegram message
     runs-on: ubuntu-latest
+    if: ${{ github.ref_type != 'tag' }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v6
@@ -26,6 +27,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    if: ${{ github.ref_type != 'tag' }}
     permissions:
       contents: read
       id-token: write
@@ -54,6 +56,7 @@ jobs:
     name: Send Telegram message
     needs: [build]
     runs-on: ubuntu-latest
+    if: ${{ github.ref_type != 'tag' }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -73,7 +76,7 @@ jobs:
   notify-on-error:
     runs-on: ubuntu-latest
     needs: [build]
-    if: failure()
+    if: ${{ failure() && github.ref_type != 'tag' }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
