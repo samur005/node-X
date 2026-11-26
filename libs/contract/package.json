@@ -1,17 +1,17 @@
 {
   "name": "@remnawave/node-contract",
-  "version": "3.4.5",
-  "description": "A node-contract library for Remnawave Panel",
+  "version": "3.4.6-x.1",
+  "description": "A node-contract library for Remnawave X Panel",
   "keywords": [],
   "homepage": "https://github.com/remnawave",
   "bugs": {
     "url": "https://github.com/remnawave/node/issues"
   },
   "license": "AGPL-3.0-only",
-  "author": "Remnawave",
+  "author": "Remnawave X",
   "repository": {
     "type": "git",
-    "url": "https://github.com/remnawave/node"
+    "url": "https://github.com/samur005/node-X"
   },
   "files": [
     "build/**/*"

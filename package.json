@@ -2,7 +2,7 @@
   "name": "@remnawave/node",
   "version": "3.4.6",
   "private": false,
-  "description": "Remnawave Node",
+  "description": "Remnawave X Node",
   "homepage": "https://github.com/remnawave",
   "bugs": {
     "url": "https://github.com/remnawave/node/issues"
@@ -28,7 +28,8 @@
     "lint:fix": "oxlint --fix",
     "check": "oxfmt --check && oxlint",
     "fix": "oxfmt && oxlint --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:qwdtt": "bun test src/integration-modules/qwdtt/*.test.ts"
   },
   "dependencies": {
     "@henrygd/semaphore": "0.1.0",
