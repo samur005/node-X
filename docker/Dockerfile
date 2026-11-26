@@ -72,6 +72,20 @@ RUN apk add --no-cache curl \
     && rm -rf /tmp/*
 
 
+
+FROM golang:1.25-bookworm AS qwdtt
+
+# ghcr.io/samur005/node-x sidecar: SpaceNeuroX/proxy-turn-vk-android (GPL-3.0)
+# pinned and patched by scripts/build-qwdtt.sh (same pin as samur005/3s-ui).
+ARG TARGETARCH
+WORKDIR /build
+COPY scripts/build-qwdtt.sh /build/scripts/build-qwdtt.sh
+COPY scripts/patches /build/scripts/patches
+RUN chmod +x /build/scripts/build-qwdtt.sh \
+    && mkdir -p /out \
+    && GOOS=linux GOARCH=${TARGETARCH} /build/scripts/build-qwdtt.sh /out/qwdtt
+
+
 FROM scratch AS integration-bin
 
 
@@ -79,10 +93,10 @@ FROM node:24.22-trixie-slim
 
 ARG S6_OVERLAY_VERSION=3.2.3.2
 
-LABEL org.opencontainers.image.title="Remnawave Node"
-LABEL org.opencontainers.image.description="Remnawave Node with built-in XRay Core"
-LABEL org.opencontainers.image.url="https://github.com/remnawave/node"
-LABEL org.opencontainers.image.source="https://github.com/remnawave/node"
+LABEL org.opencontainers.image.title="Remnawave Node-X"
+LABEL org.opencontainers.image.description="Remnawave Node-X with built-in XRay Core and qWDTT sidecar"
+LABEL org.opencontainers.image.url="https://github.com/samur005/node-X"
+LABEL org.opencontainers.image.source="https://github.com/samur005/node-X"
 LABEL org.opencontainers.image.vendor="Remnawave"
 LABEL org.opencontainers.image.licenses="AGPL-3.0"
 LABEL org.opencontainers.image.documentation="https://docs.rw"
@@ -96,6 +110,7 @@ COPY --from=xray /usr/local/share/xray/geoip.dat /usr/local/share/xray/geoip.dat
 COPY --from=xray /usr/local/share/xray/geosite.dat /usr/local/share/xray/geosite.dat
 COPY --from=asn /usr/local/share/asn /usr/local/share/asn
 COPY --from=geocheck /usr/local/bin/geocheck /usr/local/bin/geocheck
+COPY --from=qwdtt /out/qwdtt /usr/local/bin/qwdtt
 
 COPY docker/rootfs/ /
 
@@ -108,7 +123,8 @@ RUN apt-get update \
     && xz -dc /tmp/s6-noarch.tar.xz | tar -C / -xpf - \
     && xz -dc /tmp/s6-arch.tar.xz | tar -C / -xpf - \
     && rm -f /tmp/s6-noarch.tar.xz /tmp/s6-arch.tar.xz \
-    && mkdir -p /var/log/xray \
+    && mkdir -p /var/log/xray /var/lib/remnawave/qwdtt \
+    && chmod 700 /var/lib/remnawave/qwdtt \
     && chmod +x /etc/s6-overlay/scripts/init-env.sh \
         /etc/s6-overlay/s6-rc.d/xray/run \
         /etc/s6-overlay/s6-rc.d/xray-log/run \
@@ -123,7 +139,7 @@ RUN apt-get update \
         /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
         /usr/local/include/node
 
-ARG INTEGRATIONS=""
+ARG INTEGRATIONS="qwdtt"
 
 RUN --mount=type=bind,source=docker/integrations,target=/mnt/integrations \
     --mount=type=bind,from=integration-bin,target=/mnt/bin \
