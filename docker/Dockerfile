@@ -93,11 +93,11 @@ FROM node:24.22-trixie-slim
 
 ARG S6_OVERLAY_VERSION=3.2.3.2
 
-LABEL org.opencontainers.image.title="Remnawave Node-X"
-LABEL org.opencontainers.image.description="Remnawave Node-X with built-in XRay Core and qWDTT sidecar"
+LABEL org.opencontainers.image.title="Remnawave X Node"
+LABEL org.opencontainers.image.description="Remnawave X Node with built-in XRay Core and qWDTT sidecar"
 LABEL org.opencontainers.image.url="https://github.com/samur005/node-X"
 LABEL org.opencontainers.image.source="https://github.com/samur005/node-X"
-LABEL org.opencontainers.image.vendor="Remnawave"
+LABEL org.opencontainers.image.vendor="Remnawave X"
 LABEL org.opencontainers.image.licenses="AGPL-3.0"
 LABEL org.opencontainers.image.documentation="https://docs.rw"
 
