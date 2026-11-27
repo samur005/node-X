@@ -45,3 +45,6 @@ lerna-debug.log*
 
 /build
 *.tar.gz
+
+# Local AmneziaWG sidecar binary from scripts/build-awg.sh
+sidecar/awg/awg

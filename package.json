@@ -29,7 +29,8 @@
     "check": "oxfmt --check && oxlint",
     "fix": "oxfmt && oxlint --fix",
     "typecheck": "tsc --noEmit",
-    "test:qwdtt": "bun test src/integration-modules/qwdtt/*.test.ts"
+    "test:qwdtt": "bun test src/integration-modules/qwdtt/*.test.ts",
+    "test:awg": "bun test src/integration-modules/awg/*.test.ts"
   },
   "dependencies": {
     "@henrygd/semaphore": "0.1.0",

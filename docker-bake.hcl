@@ -9,7 +9,7 @@ variable "REGISTRIES" {
 variable "VARIANTS" {
     default = {
         plain = {
-            integrations = "qwdtt"
+            integrations = "qwdtt,awg"
             suffix       = ""
         }
     }
