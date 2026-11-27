@@ -1,5 +1,5 @@
 /**
- * Draft AWG node sync contract. The sidecar is not implemented in this phase.
+ * AWG node sync contract. The sidecar applies this payload on SIGHUP or start.
  *
  * Combined Remnawave X work is AGPL-3.0-only. Field names follow
  * samur005/3s-ui wgserver.Config and Obfuscation (GPL-3.0).

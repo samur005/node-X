@@ -1,5 +1,5 @@
 /**
- * Draft AWG node status contract. The sidecar is not implemented in this phase.
+ * AWG node status contract. The sidecar reports running, iface, peers and online.
  *
  * Combined Remnawave X work is AGPL-3.0-only. v1 status is running, iface,
  * peers and online — not per-client traffic counters.

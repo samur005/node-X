@@ -86,6 +86,17 @@ RUN chmod +x /build/scripts/build-qwdtt.sh \
     && GOOS=linux GOARCH=${TARGETARCH} /build/scripts/build-qwdtt.sh /out/qwdtt
 
 
+FROM golang:1.25-bookworm AS awg
+
+# Remnawave X AmneziaWG sidecar. Runtime ported from samur005/3s-ui wgserver
+# (GPL-3.0). Engine: github.com/amnezia-vpn/amneziawg-go/v3 v3.1.20260828 (MIT).
+ARG TARGETARCH
+WORKDIR /build
+COPY sidecar/awg /build
+RUN mkdir -p /out \
+    && CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build -trimpath -o /out/awg ./cmd/awg
+
+
 FROM scratch AS integration-bin
 
 
@@ -94,7 +105,7 @@ FROM node:24.22-trixie-slim
 ARG S6_OVERLAY_VERSION=3.2.3.2
 
 LABEL org.opencontainers.image.title="Remnawave X Node"
-LABEL org.opencontainers.image.description="Remnawave X Node with built-in XRay Core and qWDTT sidecar"
+LABEL org.opencontainers.image.description="Remnawave X Node with built-in XRay Core, qWDTT and AmneziaWG sidecars"
 LABEL org.opencontainers.image.url="https://github.com/samur005/node-X"
 LABEL org.opencontainers.image.source="https://github.com/samur005/node-X"
 LABEL org.opencontainers.image.vendor="Remnawave X"
@@ -111,6 +122,7 @@ COPY --from=xray /usr/local/share/xray/geosite.dat /usr/local/share/xray/geosite
 COPY --from=asn /usr/local/share/asn /usr/local/share/asn
 COPY --from=geocheck /usr/local/bin/geocheck /usr/local/bin/geocheck
 COPY --from=qwdtt /out/qwdtt /usr/local/bin/qwdtt
+COPY --from=awg /out/awg /usr/local/bin/awg
 
 COPY docker/rootfs/ /
 
@@ -123,8 +135,8 @@ RUN apt-get update \
     && xz -dc /tmp/s6-noarch.tar.xz | tar -C / -xpf - \
     && xz -dc /tmp/s6-arch.tar.xz | tar -C / -xpf - \
     && rm -f /tmp/s6-noarch.tar.xz /tmp/s6-arch.tar.xz \
-    && mkdir -p /var/log/xray /var/lib/remnawave/qwdtt \
-    && chmod 700 /var/lib/remnawave/qwdtt \
+    && mkdir -p /var/log/xray /var/lib/remnawave/qwdtt /var/lib/remnawave/awg \
+    && chmod 700 /var/lib/remnawave/qwdtt /var/lib/remnawave/awg \
     && chmod +x /etc/s6-overlay/scripts/init-env.sh \
         /etc/s6-overlay/s6-rc.d/xray/run \
         /etc/s6-overlay/s6-rc.d/xray-log/run \
@@ -139,7 +151,7 @@ RUN apt-get update \
         /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
         /usr/local/include/node
 
-ARG INTEGRATIONS="qwdtt"
+ARG INTEGRATIONS="qwdtt,awg"
 
 RUN --mount=type=bind,source=docker/integrations,target=/mnt/integrations \
     --mount=type=bind,from=integration-bin,target=/mnt/bin \
